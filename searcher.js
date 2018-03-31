@@ -10,7 +10,7 @@ class SimpleWikiSearcher {
     var searchedKeyword = inputWord;
     let reqUrl = encodeURI('https://simple.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro=&explaintext=&formatversion=2&titles=' + searchedKeyword);
     var answerToSend = '';
-    
+
     https.get(reqUrl, (res) => {
       const { statusCode } = res;
       const contentType = res.headers['content-type'];
@@ -39,8 +39,6 @@ class SimpleWikiSearcher {
           //let dataTosend = parsedData.extract;
           
           // save to file
-          //answerFile.write(parsedData.extract);
-          //answerFile.end();
         } catch (e) {
           console.error(e.message);
         }

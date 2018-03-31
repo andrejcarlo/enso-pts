@@ -8,7 +8,7 @@ const fs = require('fs');
 var answerFile = fs.createWriteStream('context.txt', {
     flags: 'w' // 'a' means appending (old data will be preserved)
   }) 
-searcher.search('Pneumonia', function(results){
+searcher.search('Violin', function(results){
     var obtained = results;
     console.log('results:' +obtained);
     
