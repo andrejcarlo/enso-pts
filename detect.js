@@ -21,7 +21,7 @@ const structjson = require('./structjson.js');
 const pump = require('pump');
 const through2 = require('through2');
 
-function detectTextIntent(projectId, sessionId, queries, languageCode) {
+exports.detectTextIntent = function (projectId, sessionId, queries, languageCode, callback) {
   // [START dialogflow_detect_intent_text]
   // Imports the Dialogflow library
   const dialogflow = require('dialogflow');
@@ -84,7 +84,8 @@ function detectTextIntent(projectId, sessionId, queries, languageCode) {
   promise
     .then(responses => {
       console.log('Detected intent');
-      logQueryResult(sessionClient, responses[0].queryResult);
+      logQueryResult(sessionClient, responses[0].queryResult); //Print to Console
+      return callback(responses[0].queryResult);
     })
     .catch(err => {
       console.error('ERROR:', err);
@@ -348,7 +349,7 @@ const cli = require(`yargs`)
       },
     },
     opts =>
-      detectTextIntent(
+      module.exports.detectTextIntent(
         opts.projectId,
         opts.sessionId,
         opts.queries,

@@ -398,7 +398,7 @@ function streamingRecognize(filename, encoding, sampleRateHertz, languageCode) {
   // [END speech_streaming_recognize]
 }
 
-function streamingMicRecognize(encoding, sampleRateHertz, languageCode) {
+exports.streamingMicRecognize = function (encoding, sampleRateHertz, languageCode, callback) {
   // [START speech_streaming_mic_recognize]
   const record = require('node-record-lpcm16');
 
@@ -428,12 +428,20 @@ function streamingMicRecognize(encoding, sampleRateHertz, languageCode) {
   const recognizeStream = client
     .streamingRecognize(request)
     .on('error', console.error)
-    .on('data', data =>
-      process.stdout.write(
+    .on('data', (data) => {
+      var transcript = data.results[0].alternatives[0].transcript;
+      console.log(`Transcription: ${data.results[0].alternatives[0].transcript}`);
+      if(transcript.length >= 2) {
+        return callback(transcript);
+      }
+
+    } 
+      /*process.stdout.write(
         data.results[0] && data.results[0].alternatives[0]
           ? `Transcription: ${data.results[0].alternatives[0].transcript}\n`
           : `\n\nReached transcription time limit, press Ctrl+C\n`
-      )
+      )*/
+      
     );
 
   // Start recording and send the microphone input to the Speech API
@@ -444,7 +452,7 @@ function streamingMicRecognize(encoding, sampleRateHertz, languageCode) {
       // Other options, see https://www.npmjs.com/package/node-record-lpcm16#options
       verbose: false,
       recordProgram: 'rec', // Try also "arecord" or "sox"
-      silence: '10.0',
+      silence: '5.0',
     })
     .on('error', console.error)
     .pipe(recognizeStream);
@@ -453,6 +461,7 @@ function streamingMicRecognize(encoding, sampleRateHertz, languageCode) {
   // [END speech_streaming_mic_recognize]
 }
 
+/*
 require(`yargs`)
   .demand(1)
   .command(
@@ -544,7 +553,7 @@ require(`yargs`)
     `Detects speech in a microphone input stream. This command requires that you have SoX installed and available in your $PATH. See https://www.npmjs.com/package/node-record-lpcm16#dependencies`,
     {},
     opts =>
-      streamingMicRecognize(
+      module.exports.streamingMicRecognize(
         opts.encoding,
         opts.sampleRateHertz,
         opts.languageCode
@@ -582,3 +591,4 @@ require(`yargs`)
   .epilogue(`For more information, see https://cloud.google.com/speech/docs`)
   .help()
   .strict().argv;
+*/

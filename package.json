@@ -14,7 +14,10 @@
   "dependencies": {
     "@google-cloud/speech": "^1.4.0",
     "@google-cloud/storage": "1.4.0",
+    "dialogflow": "^0.2.0",
     "node-record-lpcm16": "0.3.0",
+    "sleep": "^5.1.1",
+    "uuid-random": "^1.0.6",
     "yargs": "10.0.3"
   },
   "devDependencies": {
