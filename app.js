@@ -3,11 +3,11 @@ const sleep = require('sleep');
 const fs = require('fs-extra');
 const uuid = require('uuid-random');
 const debug = require('debug');
-const async = require('async');
+
 //GOOGLE Speech to TEXT
-const recognizer = require('./recognize');
+const recognizer = require('./components/recognize');
 //DialoGFlow Client + Webhook to WikiParser
-const dflow = require('./detect');
+const dflow = require('./components/detect');
 // AMAZON Text to speech functions
 const {
     checkUsage,
@@ -17,7 +17,7 @@ const {
     sanitizeOpts,
     splitText,
     readString
-  } = require('./lib') 
+  } = require('./components/lib') 
 
 const args = require('minimist')(process.argv.slice(2))
 const maxCharacterCount = 1500
