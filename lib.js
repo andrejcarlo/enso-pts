@@ -415,9 +415,17 @@ exports.readText = (inputFilename, proc) => {
         resolve(data)
       })
     }
-  }).then(text => {
+  }).then(text => { //then method when the promise is resolved . Only executed when the promise is resolved 
     spinner.end()
     return text
+  })
+}
+
+exports.readString = function (inputString) {
+  return new Promise( function(resolve, reject) {
+    resolve(inputString);
+  }).then(function(text){
+    return text;
   })
 }
 

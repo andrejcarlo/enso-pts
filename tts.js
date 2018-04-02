@@ -13,7 +13,8 @@ const {
   getSpinner,
   readText,
   sanitizeOpts,
-  splitText
+  splitText,
+  readString
 } = require('./lib')
 
 const args = require('minimist')(process.argv.slice(2))
@@ -36,7 +37,9 @@ let spinner = getSpinner()
 checkUsage(args, process)
 
 // Generate the audio file.
-readText(input, process).then(text => {
+
+//readTEXT(input, process)
+readString("let me know about elephant").then(text => {
   return splitText(text, maxCharacterCount, args)
 }).then(parts => {
   return generateSpeech(parts, args)
