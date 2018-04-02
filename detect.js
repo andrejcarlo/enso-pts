@@ -38,6 +38,7 @@ exports.detectTextIntent = function (projectId, sessionId, queries, languageCode
 
   let promise;
 
+  //let query = queries;
   // Detects the intent of the queries.
   for (const query of queries) {
     // The text query request.

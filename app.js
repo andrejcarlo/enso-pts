@@ -15,11 +15,11 @@ recognizer.streamingMicRecognize('LINEAR16', 16000, 'en-US', function(results_st
     console.log(`Results from google-stt : ${results_stt}`);
     //sleep.sleep(3);
     //console.log('Im done sleeping');
-});
 
-// async function dialog flow client
-dflow.detectTextIntent('enso-pts',uuid(), 'let me know about paper', 'en-US', function(results_dflow){
-    console.log('Obtained from dialogFlow: '+ results_dflow.fulfillmentText);
+    // async function dialog flow client
+    dflow.detectTextIntent('enso-pts',uuid(), [results_stt], 'en-US', function(results_dflow){
+        console.log('Obtained from dialogFlow: '+ results_dflow.fulfillmentText);
+    });
 });
 
 
