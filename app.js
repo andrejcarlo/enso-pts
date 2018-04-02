@@ -1,4 +1,4 @@
-// import the class
+// import the clas
 const sleep = require('sleep');
 const fs = require('fs-extra');
 const uuid = require('uuid-random');
@@ -45,28 +45,37 @@ recognizer.streamingMicRecognize('LINEAR16', 16000, 'en-US', function(results_st
     //console.log('Im done sleeping');
 
     // async function dialog flow client
-    dflow.detectTextIntent('enso-pts',uuid(), [results_stt], 'en-US', function(results_dflow){
-        console.log('Obtained from dialogFlow: '+ results_dflow.fulfillmentText);
+    var resultsDflow = dflowPromise(results_stt);
+    
         
-        readString(results_dflow.fulfillmentText).then(text => {
-            return splitText(text, maxCharacterCount, args)
-          }).then(parts => {
-            return generateSpeech(parts, args)
-          }).then(tempFile => {
-            debug(`copying ${tempFile} to ${outputFilename}`)
-            fs.move(tempFile, outputFilename, { overwrite: true }, () => {
-              spinner.succeed(`Done. Saved to ${outputFilename}`)
-            })
-          }).catch(err => {
-            spinner.info(err.message)
-          })
+    readString(resultsDflow).then(text => {
+        return splitText(text, maxCharacterCount, args)
+      }).then(parts => {
+        return generateSpeech(parts, args)
+      }).then(tempFile => {
+        debug(`copying ${tempFile} to ${outputFilename}`)
+        fs.move(tempFile, outputFilename, { overwrite: true }, () => {
+          spinner.succeed(`Done. Saved to ${outputFilename}`)
+        })
+      }).catch(err => {
+        spinner.info(err.message)
+      })
                   
     
     
-    });
+    
 });
 
-
+//convert dialogflow function to promise structure
+function dflowPromise(resultsFromSTT) {
+  return new Promise((resolve,reject) => {
+    dflow.detectTextIntent('enso-pts', uuid(), [resultsFromSTT], 'en-US',function(results_dflow){
+      resolve(results_dflow.fulfillmentText)
+    })
+  }).then((text) => {
+    return text;
+  })
+}
 
 // call search function and results return via callback
 

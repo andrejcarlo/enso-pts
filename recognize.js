@@ -356,7 +356,7 @@ function asyncRecognizeGCSWords(
   // [END speech_async_recognize_gcs_words]
 }
 
-function streamingRecognize(filename, encoding, sampleRateHertz, languageCode) {
+function Recognize(filename, encoding, sampleRateHertz, languageCode) {
   // [START speech_streaming_recognize]
   const fs = require('fs');
 
