@@ -3,12 +3,12 @@ const sleep = require('sleep');
 const fs = require('fs-extra');
 const uuid = require('uuid-random');
 const debug = require('debug');
-
+const async = require('async');
 //GOOGLE Speech to TEXT
 const recognizer = require('./recognize');
 //DialoGFlow Client + Webhook to WikiParser
 const dflow = require('./detect');
-// AMAZON Text to speech
+// AMAZON Text to speech functions
 const {
     checkUsage,
     generateSpeech,
@@ -23,50 +23,35 @@ const args = require('minimist')(process.argv.slice(2))
 const maxCharacterCount = 1500
 debug('called with arguments', JSON.stringify(sanitizeOpts(args)))
 
-let [input, outputFilename] = args._
+//specify input file if readFromFile method is used
+let  [input ,outputFilename] = args._
 
 // If only 1 argument was given, use that for the output filename.
 if (!outputFilename) {
   outputFilename = input
   input = null
 }
+
 debug('input:', input)
 debug('output:', outputFilename)
 
+//spinner used for displaying aws-tts progress
 let spinner = getSpinner()
 
 //-------------------------
 
-
-// Async function google speach to text 
+//start streaming and recognize audio using google stt
 recognizer.streamingMicRecognize('LINEAR16', 16000, 'en-US', function(results_stt) {
-    console.log(`Results from google-stt : ${results_stt}`);
-    //sleep.sleep(3);
-    //console.log('Im done sleeping');
+  console.log(`Results from google-stt : ${results_stt}`);
+  
+  // send result from stt to dialogFlow and then take the resolved output and convert it to an mp3 file
+  dflowPromise(results_stt).then(text =>{
+    convertToAudio(text);
+  })
+})
 
-    // async function dialog flow client
-    var resultsDflow = dflowPromise(results_stt);
-    
-        
-    readString(resultsDflow).then(text => {
-        return splitText(text, maxCharacterCount, args)
-      }).then(parts => {
-        return generateSpeech(parts, args)
-      }).then(tempFile => {
-        debug(`copying ${tempFile} to ${outputFilename}`)
-        fs.move(tempFile, outputFilename, { overwrite: true }, () => {
-          spinner.succeed(`Done. Saved to ${outputFilename}`)
-        })
-      }).catch(err => {
-        spinner.info(err.message)
-      })
-                  
-    
-    
-    
-});
 
-//convert dialogflow function to promise structure
+//DialogFlow Promise, handles the textRequests to the client js module
 function dflowPromise(resultsFromSTT) {
   return new Promise((resolve,reject) => {
     dflow.detectTextIntent('enso-pts', uuid(), [resultsFromSTT], 'en-US',function(results_dflow){
@@ -77,17 +62,19 @@ function dflowPromise(resultsFromSTT) {
   })
 }
 
-// call search function and results return via callback
-
-/*var answerFile = fs.createWriteStream('context.txt', {
-    flags: 'w' // 'a' means appending (old data will be preserved)
-  }) 
-searcher.search('Violin', function(results){
-    var obtained = results;
-    console.log('results:' +obtained);
-    
-    answerFile.write(obtained);
-    answerFile.end();
-});*/
-
+//AWS-TTS convert dialogFlow response to an mp3 file
+function convertToAudio(textInput){
+  readString(textInput).then(text => {
+      return splitText(text, maxCharacterCount, args)
+    }).then(parts => {
+      return generateSpeech(parts, args)
+    }).then(tempFile => {
+      debug(`copying ${tempFile} to ${outputFilename}`)
+      fs.move(tempFile, outputFilename, { overwrite: true }, () => {
+        spinner.succeed(`Done. Saved to ${outputFilename}`)
+      })
+    }).catch(err => {
+      spinner.info(err.message)
+    })
+}
 

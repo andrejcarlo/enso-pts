@@ -12,11 +12,12 @@
     "node": ">=4.0.0"
   },
   "scripts": {
-    "test": "node app.js test.mp3"
+    "test": "node app.js ./testresources/test.mp3"
   },
   "dependencies": {
     "@google-cloud/speech": "^1.4.0",
     "@google-cloud/storage": "1.4.0",
+    "async": "^2.6.0",
     "aws-sdk": "^2.218.1",
     "dialogflow": "^0.2.0",
     "node-record-lpcm16": "0.3.0",
@@ -34,7 +35,6 @@
     "sinon": "4.1.1",
     "uuid": "3.1.0"
   },
-
   "homepage": "https://github.com/andrejcp/enso-pts",
   "description": "A teaching assistant",
   "main": "app.js"
