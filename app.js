@@ -4,6 +4,8 @@ const fs = require('fs-extra');
 const uuid = require('uuid-random');
 const debug = require('debug');
 
+// audio streaming library
+const audiostream = require('./components/stream-audio');
 //GOOGLE Speech to TEXT
 const recognizer = require('./components/recognize');
 //DialoGFlow Client + Webhook to WikiParser
@@ -46,7 +48,8 @@ recognizer.streamingMicRecognize('LINEAR16', 16000, 'en-US', function(results_st
   
   // send result from stt to dialogFlow and then take the resolved output and convert it to an mp3 file
   dflowPromise(results_stt).then(text =>{
-    convertToAudio(text);
+    //convertToAudio(text);
+    audiostream.startAudio("Humble");
   })
 })
 
