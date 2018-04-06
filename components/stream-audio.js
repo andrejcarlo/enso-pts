@@ -32,36 +32,36 @@ var metaData = {
 //player.isPlaying();
 
 exports.startAudio = (songName) => {
+  // EMIT EVENTS
+  player.on('play start', function () {
+    // Code here is executed every time a song starts playing
+    console.log("Playing song: " + songName);
+  });
 
- 
-  
+  player.on('play end', function () {
+    // Code here is executed every time a song ends
+    console.log("Song ended");
+  });
+
+  player.on('song added', function () {
+    // Code here is executed every time a song is added to the queue
+    console.log("Song added to the queue");
+  });
+
   if (player.isPlaying()) {
-    player.pause();
-    sleep.sleep(5);
-    console.log(player.getQueue());
-    player.add('./' + songName + ".mp3");
-    console.log(player.getQueue());
-    player.play();
+    //player.pause();
+    //sleep.sleep(5);
+    //player.remove(0);
+    // console.log(player.getQueue());
+    // player.add('./' + songName + ".mp3");
+    // console.log(player.getQueue());
+    //player.play();
   }
   else {
     player.add('./' + songName + ".mp3");
 
     player.play();
-
-    // EMIT EVENTS
-    player.on('play start', function() {
-      // Code here is executed every time a song starts playing
-      console.log("Playing song: " + songName);
-    });
-    
-    player.on('play end', function() {
-      // Code here is executed every time a song ends
-      console.log("Song ended");
-    });
-    
-    player.on('song added', function() {
-      // Code here is executed every time a song is added to the queue
-      console.log("Song added to the queue");
-    });
-}
+    sleep.sleep(3);
+    player.pause();
+  }
 }
