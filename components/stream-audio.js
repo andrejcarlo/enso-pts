@@ -1,5 +1,7 @@
 var StreamPlayer = require('stream-player');
+var sleep = require('sleep');
 var player = new StreamPlayer();
+
 // Add a song url to the queue
 
 //player.add('http://path-to-mp3.com/example.mp3', metaData);
@@ -31,9 +33,19 @@ var metaData = {
 
 exports.startAudio = (songName) => {
 
-  player.add('./' + songName + ".mp3");
+ 
   
-  if (!player.isPlaying()) {
+  if (player.isPlaying()) {
+    player.pause();
+    sleep.sleep(5);
+    console.log(player.getQueue());
+    player.add('./' + songName + ".mp3");
+    console.log(player.getQueue());
+    player.play();
+  }
+  else {
+    player.add('./' + songName + ".mp3");
+
     player.play();
 
     // EMIT EVENTS
