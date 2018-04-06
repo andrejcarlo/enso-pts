@@ -6,12 +6,14 @@ var player = new StreamPlayer();
 
 // Add a song url to the queue along with some metadata about the song
 // Metadata can be any object that you want in any format you want
+/*
 var metaData = {
   "title": "Humble",
   "artist": "Kendrick Lamarr",
   "duration": 184000,
   "humanTime": "3:04"
 };
+*/
 
 //player.add('./Humble.mp3', metaData);
 
@@ -19,13 +21,13 @@ var metaData = {
 //player.play();
 
 // Get the metadata for the current playing song and a time stamp when it started playing
-player.nowPlaying();
+//player.nowPlaying();
 
 // Get an array of metadata for the songs in the queue (excludes the current playing song)
-player.getQueue();
+//player.getQueue();
 
 // Get if the player is currently playing
-player.isPlaying();
+//player.isPlaying();
 
 exports.startAudio = (songName) => {
 

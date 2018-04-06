@@ -3,6 +3,7 @@ const sleep = require('sleep');
 const fs = require('fs-extra');
 const uuid = require('uuid-random');
 const debug = require('debug');
+const structjson = require('./components/structjson.js');
 
 // audio streaming library
 const audiostream = require('./components/stream-audio');
@@ -47,9 +48,22 @@ recognizer.streamingMicRecognize('LINEAR16', 16000, 'en-US', function(results_st
   console.log(`Results from google-stt : ${results_stt}`);
   
   // send result from stt to dialogFlow and then take the resolved output and convert it to an mp3 file
-  dflowPromise(results_stt).then(text =>{
-    //convertToAudio(text);
-    audiostream.startAudio("Humble");
+  dflowPromise(results_stt).then(dflowResponse => {
+    // Execute the appropiate command
+    let intentName = dflowResponse["intentName"];
+    let fulfillmentText = dflowResponse["fulfillmentText"];
+    switch (intentName) {
+      // search on simplewiki case
+      case "keyword-intent":
+        convertToAudio(fulfillmentText);
+        break;
+      
+      // play audio case
+      case "playSong-intent":
+        audiostream.startAudio(fulfillmentText); //song name
+        break;
+
+    }
   })
 })
 
@@ -58,10 +72,16 @@ recognizer.streamingMicRecognize('LINEAR16', 16000, 'en-US', function(results_st
 function dflowPromise(resultsFromSTT) {
   return new Promise((resolve,reject) => {
     dflow.detectTextIntent('enso-pts', uuid(), [resultsFromSTT], 'en-US',function(results_dflow){
-      resolve(results_dflow.fulfillmentText)
+      // Dictionary containing the intent and text reposonse
+      let dflowResponse = {
+        intentName: results_dflow.intent.displayName, 
+        fulfillmentText: results_dflow.fulfillmentText
+      }
+      resolve(dflowResponse);
     })
-  }).then((text) => {
-    return text;
+  //}).then((dflowResponse) => {
+  //  return dflowResponse;
+  //})
   })
 }
 
