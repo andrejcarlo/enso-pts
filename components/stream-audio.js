@@ -48,7 +48,7 @@ exports.startAudio = (songName) => {
     console.log("Song added to the queue");
   });
 
-  if (player.isPlaying()) {
+  //if (player.isPlaying()) {
     //player.pause();
     //sleep.sleep(5);
     //player.remove(0);
@@ -56,12 +56,14 @@ exports.startAudio = (songName) => {
     // player.add('./' + songName + ".mp3");
     // console.log(player.getQueue());
     //player.play();
-  }
-  else {
+  //}
+  //else {
     player.add('./' + songName + ".mp3");
 
     player.play();
     sleep.sleep(3);
     player.pause();
-  }
+    sleep.sleep(3);
+    player.play();
+  //}
 }

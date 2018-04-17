@@ -279,7 +279,7 @@ exports.generateSpeech = (strParts, opts) => {
     'sample-rate': opts.sampleRate,
     'secret-key': opts.secretKey,
     type: opts.type || 'text',
-    voice: opts.voice || 'Joanna'
+    voice: opts.voice || 'Justin'
   }, opts)
   /* istanbul ignore next */
   if (typeof opts.lexicon !== 'undefined' && !Array.isArray(opts.lexicon)) {

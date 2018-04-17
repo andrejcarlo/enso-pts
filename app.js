@@ -4,6 +4,7 @@ const fs = require('fs-extra');
 const uuid = require('uuid-random');
 const debug = require('debug');
 const structjson = require('./components/structjson.js');
+const shortid = require('shortid');
 
 // audio streaming library
 const audiostream = require('./components/stream-audio');
@@ -27,6 +28,7 @@ const maxCharacterCount = 1500
 debug('called with arguments', JSON.stringify(sanitizeOpts(args)))
 
 //specify input file if readFromFile method is used
+/*
 let  [input ,outputFilename] = args._
 
 // If only 1 argument was given, use that for the output filename.
@@ -34,6 +36,10 @@ if (!outputFilename) {
   outputFilename = input
   input = null
 }
+*/
+let input = null;
+let fileNameUUID = shortid.generate(); //generate short uuid
+let outputFilename = fileNameUUID;
 
 debug('input:', input)
 debug('output:', outputFilename)
@@ -61,8 +67,10 @@ recognizer.streamingMicRecognize('LINEAR16', 16000, 'en-US', function(results_st
       // play audio case
       case "playSong-intent":
         audiostream.startAudio(fulfillmentText); //song name
-        
         break;
+      
+      default:
+        console.log("In default case -- not doing anything");
 
     }
   })
