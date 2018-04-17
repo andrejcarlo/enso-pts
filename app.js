@@ -39,7 +39,7 @@ if (!outputFilename) {
 */
 let input = null;
 let fileNameUUID = shortid.generate(); //generate short uuid
-let outputFilename = fileNameUUID + ".mp3";
+let outputFilename = "./testresources/" + fileNameUUID + ".mp3";
 
 debug('input:', input)
 debug('output:', outputFilename)
@@ -66,7 +66,7 @@ recognizer.streamingMicRecognize('LINEAR16', 16000, 'en-US', function(results_st
       
       // play audio case
       case "playSong-intent":
-        audiostream.startAudio(fulfillmentText); //song name
+        audiostream.startAudio("songs/" + fulfillmentText); //song name
         break;
       
       default:
