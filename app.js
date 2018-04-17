@@ -5,6 +5,7 @@ const uuid = require('uuid-random');
 const debug = require('debug');
 const structjson = require('./components/structjson.js');
 const shortid = require('shortid');
+const path = require('path');
 
 // audio streaming library
 const audiostream = require('./components/stream-audio');
@@ -39,7 +40,9 @@ if (!outputFilename) {
 */
 let input = null;
 let fileNameUUID = shortid.generate(); //generate short uuid
-let outputFilename = "./testresources/" + fileNameUUID + ".mp3";
+//let outputFilename = "./testresources/" + fileNameUUID + ".mp3";
+let outputFilename = "/Users/alex/Lipsync Raw Test 2/Assets/Crazy Minnow Studio/SALSA with RandomEyes/Resources/audio/" + fileNameUUID + ".mp3";
+//let outputFilename = "/Users/alex/Lipsync Raw Test 2/resources/" + fileNameUUID + ".mp3";
 
 debug('input:', input)
 debug('output:', outputFilename)
@@ -52,28 +55,38 @@ let spinner = getSpinner()
 //start streaming and recognize audio using google stt
 recognizer.streamingMicRecognize('LINEAR16', 16000, 'en-US', function(results_stt) {
   console.log(`Results from google-stt : ${results_stt}`);
-  
-  // send result from stt to dialogFlow and then take the resolved output and convert it to an mp3 file
-  dflowPromise(results_stt).then(dflowResponse => {
-    // Execute the appropiate command
-    let intentName = dflowResponse["intentName"];
-    let fulfillmentText = dflowResponse["fulfillmentText"];
-    switch (intentName) {
-      // search on simplewiki case
-      case "keyword-intent":
-        convertToAudio(fulfillmentText);
-        break;
-      
-      // play audio case
-      case "playSong-intent":
-        audiostream.startAudio("songs/" + fulfillmentText); //song name
-        break;
-      
-      default:
-        console.log("In default case -- not doing anything");
+  console.log("Result_stt = " + results_stt.trim());
+  if (results_stt.trim() != "stop") {
+    // send result from stt to dialogFlow
+    dflowPromise(results_stt).then(dflowResponse => {
+      // Execute the appropiate command
+      let intentName = dflowResponse["intentName"];
+      let fulfillmentText = dflowResponse["fulfillmentText"];
+      switch (intentName) {
+        // search on simplewiki case
+        case "keyword-intent":
+          convertToAudio(fulfillmentText);
+          break;
+        
+        // play audio case
+        case "playSong-intent":
+          audiostream.startAudio(fulfillmentText); //song name
+          break;
+        /*
+        // stop Unity from playing file
+        case "stop-intent":
+          deleteMP3();
+          break;
+        */
+        default:
+          console.log("In default case -- not doing anything");
+          break;
 
-    }
-  })
+      }
+    })
+  } else {
+    deleteMP3();
+  }
 })
 
 
@@ -108,5 +121,21 @@ function convertToAudio(textInput){
     }).catch(err => {
       spinner.info(err.message)
     })
+}
+
+function deleteMP3 () {
+  //delete mp3 file
+  const directory = '/Users/alex/Lipsync Raw Test 2/Assets/Crazy Minnow Studio/SALSA with RandomEyes/Resources/audio/';
+  //const directory = "/Users/alex/Lipsync Raw Test 2/resources/";
+
+  fs.readdir(directory, (err, files) => {
+    if (err) throw err;
+
+    for (const file of files) {
+      fs.unlink(path.join(directory, file), err => {
+        if (err) throw err;
+      });
+    }
+  });
 }
 

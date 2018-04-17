@@ -58,7 +58,7 @@ exports.startAudio = (songName) => {
     //player.play();
   //}
   //else {
-    player.add('./' + songName + ".mp3");
+    player.add('./songs/' + songName + ".mp3");
 
     player.play();
     sleep.sleep(3);
