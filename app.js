@@ -39,7 +39,7 @@ if (!outputFilename) {
 */
 let input = null;
 let fileNameUUID = shortid.generate(); //generate short uuid
-let outputFilename = fileNameUUID;
+let outputFilename = fileNameUUID + ".mp3";
 
 debug('input:', input)
 debug('output:', outputFilename)
